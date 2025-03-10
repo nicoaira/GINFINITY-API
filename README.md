@@ -51,10 +51,10 @@ uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 
 To build and run the **Dockerized API**:
 ```bash
-docker build -t rna-api .
-docker run -p 8000:8000 --env-file .env rna-api
+docker build -t ginfinity-api .
+docker run -p 8000:8000 --env-file .env ginfinity-api
 ```
 
 ## Deployment
-This API is **AWS-ready**. To deploy with AWS (once you get credits), just update  with your AWS S3 bucket and model weight location.
+This API is **AWS-ready**. To deploy with AWS, just update  with your AWS S3 bucket and model weight location.
 
