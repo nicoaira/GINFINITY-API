@@ -1,0 +1,3 @@
+[submodule "external/GINFINITY"]
+	path = external/GINFINITY
+	url = https://github.com/nicoaira/GINFINITY
