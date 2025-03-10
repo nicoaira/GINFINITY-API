@@ -56,5 +56,5 @@ docker run -p 8000:8000 --env-file .env ginfinity-api
 ```
 
 ## Deployment
-This API is **AWS-ready**. To deploy with AWS, just update  with your AWS S3 bucket and model weight location.
+This API is **AWS-ready**. To deploy with AWS (once you get credits), just update  with your AWS S3 bucket and model weight location.
 
