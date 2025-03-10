@@ -1,0 +1,18 @@
+# Ignore Python cache and virtual environments
+__pycache__/
+*.pyc
+*.pyo
+venv/
+env/
+
+# Ignore local model weights (for safety)
+models/*.pth
+
+# Ignore environment variable files
+.env
+
+# Ignore Jupyter notebook checkpoints
+notebooks/.ipynb_checkpoints/
+
+# Ignore logs
+logs/
