@@ -1,30 +1,32 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
-import torch
-from api.models import load_model  # This is your model-loading code adapted for the API
-from src.utils import validate_structure  # Utility to check valid dot-bracket strings
-from predict_embedding import get_gin_embedding  # Reuse your embedding function
 import os
+import torch
+
+# Import shared functions and model loader
+from api.models import load_model
+from api.utils.embedding import get_gin_embedding
+from external.GINFINITY.src.utils import is_valid_dot_bracket as validate_structure # Assuming your shared utils include this
 
 # Initialize FastAPI app
 app = FastAPI(title="RNA Similarity API")
 
-# Set device and load model once on startup
+# Set device and load the model once at startup
 device = "cuda" if torch.cuda.is_available() else "cpu"
-model = load_model(model_path=os.getenv("MODEL_PATH", "models/model_weights.pth"), device=device)
-graph_encoding = model.metadata.get('graph_encoding', "standard")  # Use default if not set
+# The model checkpoint path is taken from an environment variable or a default location
+model_checkpoint = os.getenv("MODEL_PATH", "models/model_weights.pth")
+model = load_model(model_checkpoint, device)
+graph_encoding = model.metadata.get("graph_encoding", "standard")
 
-# --- Pydantic Models for Request and Response ---
-
+# Define Pydantic models for input and output
 class EmbedRequest(BaseModel):
     structure: str = Field(..., description="RNA secondary structure in dot-bracket notation")
-    # Optional parameters for subgraph embedding generation:
     subgraphs: bool = False
     L: int = None
     keep_paired_neighbors: bool = False
 
 class EmbedResponse(BaseModel):
-    embeddings: list[str] = Field(..., description="List of embedding vectors as comma-separated floats")
+    embeddings: list[str] = Field(..., description="List of embedding vectors (as comma-separated floats)")
 
 class CompareRequest(BaseModel):
     structure1: str = Field(..., description="First RNA secondary structure in dot-bracket notation")
@@ -36,16 +38,15 @@ class CompareRequest(BaseModel):
 class CompareResponse(BaseModel):
     similarity_score: float = Field(..., description="Squared Euclidean distance between embeddings")
 
-
-# --- API Endpoints ---
-
+# Endpoint to generate embedding(s) for a given RNA structure
 @app.post("/embed", response_model=EmbedResponse)
-def embed(request: EmbedRequest):
+def embed_endpoint(request: EmbedRequest):
     try:
-        # Validate input structure
+        # Validate structure using your shared validation function
         validate_structure(request.structure)
-        # Get embedding(s) using your helper function.
-        # This function returns a list of tuples (start_idx, embedding_string).
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    try:
         emb_list = get_gin_embedding(
             model,
             graph_encoding,
@@ -54,21 +55,23 @@ def embed(request: EmbedRequest):
             L=request.L,
             keep_paired_neighbors=request.keep_paired_neighbors
         )
-        # For simplicity, if subgraphs is False, use the first (or only) embedding.
+        # Return all computed embeddings as a list of strings
         embeddings = [emb for _, emb in emb_list]
         return EmbedResponse(embeddings=embeddings)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Error computing embedding: {str(e)}")
 
-
+# Endpoint to compare two RNA structures
 @app.post("/compare", response_model=CompareResponse)
-def compare(request: CompareRequest):
+def compare_endpoint(request: CompareRequest):
     try:
-        # Validate both input structures
+        # Validate both structures
         validate_structure(request.structure1)
         validate_structure(request.structure2)
-        
-        # Generate embeddings for each structure
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+    try:
         emb_list1 = get_gin_embedding(
             model,
             graph_encoding,
@@ -85,20 +88,19 @@ def compare(request: CompareRequest):
             L=request.L,
             keep_paired_neighbors=request.keep_paired_neighbors
         )
-        # For simplicity, use the first embedding from each list.
+        # For simplicity, take the first embedding from each result
         emb_str1 = emb_list1[0][1]
         emb_str2 = emb_list2[0][1]
-
-        # Convert comma-separated string to float list
-        def parse_embedding(emb_str):
-            return [float(x) for x in emb_str.split(',')]
-        vec1 = parse_embedding(emb_str1)
-        vec2 = parse_embedding(emb_str2)
-
-        # Compute squared Euclidean distance
+        
+        # Convert the embedding strings into lists of floats
+        vec1 = [float(x) for x in emb_str1.split(',')]
+        vec2 = [float(x) for x in emb_str2.split(',')]
+        
         if len(vec1) != len(vec2):
-            raise ValueError("Embedding dimensions do not match.")
-        distance = sum((x - y) ** 2 for x, y in zip(vec1, vec2))
+            raise HTTPException(status_code=400, detail="Embedding dimensions do not match.")
+        
+        # Compute squared Euclidean distance
+        distance = sum((a - b) ** 2 for a, b in zip(vec1, vec2))
         return CompareResponse(similarity_score=distance)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Error computing similarity: {str(e)}")

@@ -42,6 +42,15 @@ rna-similarity-api/
 ```
 
 ## 🛠 Setup
+
+To clone this repository with the submodule GINFINITY with required code:
+
+```bash
+git clone https://github.com/nicoaira/GINFINITY-API.git
+cd GINFINITY-API.git
+git submodule update --init --recursive
+```
+
 Run the following to install dependencies and start the API locally:
 
 ```bash
