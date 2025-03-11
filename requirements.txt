@@ -1,6 +1,10 @@
+--no-binary=forgi
 uvicorn==0.34.0
 fastapi==0.115.11
 torch==2.4.1
 torch-geometric==2.6.1
 gputil==1.4.0
+# pybind11>=2.12
 forgi==2.2.3 # not needed for the api
+numpy==2.1.2
+# logging-exceptions==0.1.9
