@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  db:
+    image: mysql:8.0
+    container_name: rna_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: rna_db
+      MYSQL_USER: rna_user
+      MYSQL_PASSWORD: rna_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      # Optional: Include an initialization script that creates tables.
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  api:
+    build: .
+    container_name: rna_api
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 3306
+      DATABASE_USER: rna_user
+      DATABASE_PASSWORD: rna_password
+      DATABASE_NAME: rna_db
+volumes:
+  db_data:

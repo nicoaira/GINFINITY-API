@@ -58,6 +58,24 @@ curl -X POST "http://localhost:8000/compare" \
          }'
 ```
 
+### POST /search
+- **Description**: Search for similar RNA structures in the database using a query secondary structure.
+- **Request Body** (JSON):
+  - `structure` (string, required): RNA secondary structure in dot-bracket notation.
+  - `metric` (string, optional): Distance metric to use ("squared" or "cosine"). Default is "squared".
+- **Response** (JSON):
+  - `results`: Array of RNA records (with fields: id, accession, description, structure, embedding_vector) representing the top 30 similar entries.
+
+#### Example Usage for /search
+```
+curl -X POST "http://localhost:8000/search" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "structure": "(((((((..(((............)))..((((.......))))..((((...))))..(((((.......)))))))))))).",
+           "metric": "square"
+         }'
+```
+
 ## Running the API
 Start the FastAPI application (for example, using Uvicorn):
 ```
