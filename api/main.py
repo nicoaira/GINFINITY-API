@@ -15,8 +15,12 @@ from external.GINFINITY.src.utils import calculate_distances
 from db.connection import get_db
 from db.models import Embedding
 
+# Import health router
+from api.routes import health
+
 # Initialize FastAPI app
 app = FastAPI(title="RNA Similarity API")
+app.include_router(health.router)
 
 # Set device and load the model once at startup
 device = "cuda" if torch.cuda.is_available() else "cpu"
