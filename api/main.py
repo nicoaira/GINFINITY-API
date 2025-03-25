@@ -1,9 +1,11 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, File, UploadFile
 from pydantic import BaseModel, Field
 import os
 import torch
 from typing import Union, List
 from sqlalchemy.orm import Session
+import pandas as pd
+from io import StringIO
 
 # Import shared functions and model loader
 from api.models import load_model
@@ -18,9 +20,22 @@ from db.models import Embedding
 # Import health router
 from api.routes import health
 
+# Imports the StaticFiles class to serve static files
+from fastapi.staticfiles import StaticFiles 
+from fastapi.responses import FileResponse
+
 # Initialize FastAPI app
 app = FastAPI(title="RNA Similarity API")
 app.include_router(health.router)
+app.include_router(productos_router, prefix="/api")
+
+# Mounts the frontend's built files (from Vue or another framework) to serve them as static files.
+app.mount("/", StaticFiles(directory="ginfinity-frontend/dist", html=True), name="frontend")
+
+@app.get("/{path_name}")
+async def catch_all(path_name: str):
+    return FileResponse("ginfinity-frontend/dist/index.html")
+
 
 # Set device and load the model once at startup
 device = "cuda" if torch.cuda.is_available() else "cpu"
