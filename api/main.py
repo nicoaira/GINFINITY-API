@@ -1,9 +1,11 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Response
 from pydantic import BaseModel, Field
 import os
 import torch
 from typing import Union, List
 from sqlalchemy.orm import Session
+import pandas as pd
+import io
 
 # Import shared functions and model loader
 from api.models import load_model
@@ -208,3 +210,25 @@ def batch_embed_endpoint(request: BatchEmbedRequest):
         return BatchEmbedResponse(embeddings=output)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error computing batch embeddings: {str(e)}")
+
+# New endpoint to process TSV file and add an embedding_vector column.
+@app.post("/tsv_embed")
+async def tsv_embed_endpoint(file: UploadFile = File(...)):
+    try:
+        content = await file.read()
+        df = pd.read_csv(io.StringIO(content.decode("utf-8")), sep="\t")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Invalid TSV file.")
+    
+    if not {"id", "secondary_structure"}.issubset(df.columns):
+        raise HTTPException(status_code=400, detail="TSV must contain 'id' and 'secondary_structure' columns.")
+    
+    # Compute embeddings for each structure (using L=None for a single embedding)
+    structures = df["secondary_structure"].tolist()
+    emb_results = get_gin_embedding(model, graph_encoding, structures, device, L=None, batch_size=128, cpus=2)
+    embeddings = [emb_list[0][1] for emb_list in emb_results]  # pick the first embedding from each result
+    
+    df["embedding_vector"] = embeddings
+    output = io.StringIO()
+    df.to_csv(output, sep="\t", index=False)
+    return Response(content=output.getvalue(), media_type="text/tab-separated-values")
