@@ -5,6 +5,6 @@ torch==2.4.1
 torch-geometric==2.6.1
 gputil==1.4.0
 forgi==2.2.3 # not needed for the api
-numpy==1.24.3
+numpy==2.1.2
 sqlalchemy==2.0.38
 pymysql==1.1.1
