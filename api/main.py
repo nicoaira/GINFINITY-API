@@ -5,7 +5,7 @@ import torch
 from typing import Union, List
 from sqlalchemy.orm import Session
 import pandas as pd
-from io import StringIO
+import io
 
 # Import shared functions and model loader
 from api.models import load_model
