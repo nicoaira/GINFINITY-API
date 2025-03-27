@@ -8,10 +8,9 @@ from external.GINFINITY.src.utils import (
     generate_slices,
 )
 
-def get_gin_embedding(model, graph_encoding, structure, device, L=None, keep_paired_neighbors=False):
+def convert_structure_to_graph(structure, graph_encoding, device):
     """
-    Given an RNA secondary structure string and a loaded model,
-    convert the structure to a graph and compute its embedding.
+    Convert an RNA secondary structure string to a graph and its tensor representation.
     """
     if graph_encoding == "standard":
         graph = dotbracket_to_graph(structure)
@@ -21,34 +20,57 @@ def get_gin_embedding(model, graph_encoding, structure, device, L=None, keep_pai
         tg = forgi_graph_to_tensor(graph)
     else:
         raise ValueError(f"Unknown graph encoding: {graph_encoding}")
-
     tg = tg.to(device)
-    model.eval()
-    with torch.no_grad():
-        if L is not None:
-            node_embs = model.get_node_embeddings(tg)
-            sorted_nodes = sorted(graph.nodes())
-            n = len(sorted_nodes)
-            if n < L:
-                return [(-1, "")]
-            embeddings = []
-            slices = generate_slices(graph, L, keep_paired_neighbors)
-            for start_idx, subgraph_H in slices:
-                subgraph_nodes = sorted(subgraph_H.nodes())
-                node_indices = [sorted_nodes.index(node) for node in subgraph_nodes]
-                if not node_indices:
-                    continue
-                sub_embs = node_embs[node_indices]
-                batch = torch.zeros(len(sub_embs), dtype=torch.long, device=device)
-                pooled = model.pooling(sub_embs, batch)
-                sub_embedding = model.fc(pooled)
-                embedding_str = ','.join(f'{x:.6f}' for x in sub_embedding.cpu().numpy().flatten())
-                embeddings.append((start_idx, embedding_str))
-            return embeddings if embeddings else [(-1, "")]
-        else:
-            embedding = model.forward_once(tg)
-            return [(None, ','.join(f'{x:.6f}' for x in embedding.cpu().numpy().flatten()))]
+    return graph, tg
 
+def get_gin_embedding(model, graph_encoding, structures, device, L=None, keep_paired_neighbors=False, batch_size=1, cpus=1):
+    """
+    Given a list of RNA secondary structure strings and a loaded model,
+    convert the structures to graphs and compute their embeddings.
+    Processes the structures in batches (batch_size) and sets the number of CPU threads (cpus).
+    
+    Returns:
+        List of lists of tuples (start_idx, embedding_str) for each structure.
+    """
+    if not isinstance(structures, list):
+        structures = [structures]
+    if device == "cpu" and cpus > 1:
+        torch.set_num_threads(cpus)
+    
+    results = []
+    for i in range(0, len(structures), batch_size):
+        batch_structures = structures[i:i+batch_size]
+        batch_results = []
+        for structure in batch_structures:
+            graph, tg = convert_structure_to_graph(structure, graph_encoding, device)
+            model.eval()
+            with torch.no_grad():
+                if L is not None:
+                    node_embs = model.get_node_embeddings(tg)
+                    sorted_nodes = sorted(graph.nodes())
+                    if len(sorted_nodes) < L:
+                        batch_results.append([(-1, "")])
+                        continue
+                    embeddings = []
+                    slices = generate_slices(graph, L, keep_paired_neighbors)
+                    for start_idx, subgraph_H in slices:
+                        subgraph_nodes = sorted(subgraph_H.nodes())
+                        node_indices = [sorted_nodes.index(node) for node in subgraph_nodes]
+                        if not node_indices:
+                            continue
+                        sub_embs = node_embs[node_indices]
+                        batch_idx = torch.zeros(len(sub_embs), dtype=torch.long, device=device)
+                        pooled = model.pooling(sub_embs, batch_idx)
+                        sub_embedding = model.fc(pooled)
+                        embedding_str = ','.join(f'{x:.6f}' for x in sub_embedding.cpu().numpy().flatten())
+                        embeddings.append((start_idx, embedding_str))
+                    batch_results.append(embeddings if embeddings else [(-1, "")])
+                else:
+                    embedding = model.forward_once(tg)
+                    emb_str = ','.join(f'{x:.6f}' for x in embedding.cpu().numpy().flatten())
+                    batch_results.append([(None, emb_str)])
+        results.extend(batch_results)
+    return results
 
 def calculate_query_distances(query_vector, candidate_vectors, metric='squared', batch_size=512):
     """
