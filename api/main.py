@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends, File, UploadFile
+from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Response
 from pydantic import BaseModel, Field
 import os
 import torch
@@ -94,6 +94,19 @@ class SearchRequest(BaseModel):
 class SearchResponse(BaseModel):
     results: list[SearchResult] = Field(..., description="Top 30 similar RNA embeddings and their distance metrics")
 
+# Add new Pydantic models for batch embedding endpoint
+class BatchStructureItem(BaseModel):
+    id: str = Field(..., description="Unique identifier for the structure")
+    structure: str = Field(..., description="RNA secondary structure in dot-bracket notation")
+
+class BatchEmbedRequest(BaseModel):
+    items: List[BatchStructureItem] = Field(..., description="List of structures with unique ids")
+
+class BatchEmbedResponse(BaseModel):
+    embeddings: List[dict] = Field(
+        ..., description="List of {id: string, embedding: string} pairs"
+    )
+
 # Endpoint to generate embedding(s) for a given RNA structure
 @app.post("/embed", response_model=EmbedResponse)
 def embed_endpoint(request: EmbedRequest):
@@ -102,8 +115,9 @@ def embed_endpoint(request: EmbedRequest):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     try:
-        emb_list = get_gin_embedding(model, graph_encoding, request.structure, device)
-        embeddings = [emb for _, emb in emb_list]
+        # Pass a list even for a single structure
+        emb_lists = get_gin_embedding(model, graph_encoding, [request.structure], device, batch_size=1, cpus=1)
+        embeddings = [emb for _, emb in emb_lists[0]]
         return EmbedResponse(embeddings=embeddings)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error computing embedding: {str(e)}")
@@ -122,9 +136,8 @@ def compare_endpoint(request: CompareRequest):
         raise HTTPException(status_code=400, detail=str(e))
     
     try:
-        emb_list1 = get_gin_embedding(model, graph_encoding, request.structure1, device)
-        emb_str1 = emb_list1[0][1]
-        vec1 = [float(x) for x in emb_str1.split(',')]
+        emb_list1 = get_gin_embedding(model, graph_encoding, [request.structure1], device, batch_size=1, cpus=1)[0]
+        vec1 = [float(x) for x in emb_list1[0][1].split(',')]
         
         def compute_similarity(vec_a, vec_b, metric):
             embeddings = [vec_a, vec_b]
@@ -133,18 +146,16 @@ def compare_endpoint(request: CompareRequest):
         
         if isinstance(request.structure2, list):
             scores = []
-            for s in request.structure2:
-                emb_list2 = get_gin_embedding(model, graph_encoding, s, device)
-                emb_str2 = emb_list2[0][1]
-                vec2 = [float(x) for x in emb_str2.split(',')]
+            emb_lists2 = get_gin_embedding(model, graph_encoding, request.structure2, device, batch_size=1, cpus=1)
+            for emb_list2 in emb_lists2:
+                vec2 = [float(x) for x in emb_list2[0][1].split(',')]
                 if len(vec1) != len(vec2):
                     raise HTTPException(status_code=400, detail="Embedding dimensions do not match.")
                 scores.append(compute_similarity(vec1, vec2, request.metric))
             return CompareResponse(similarity_score=scores)
         else:
-            emb_list2 = get_gin_embedding(model, graph_encoding, request.structure2, device)
-            emb_str2 = emb_list2[0][1]
-            vec2 = [float(x) for x in emb_str2.split(',')]
+            emb_list2 = get_gin_embedding(model, graph_encoding, [request.structure2], device, batch_size=1, cpus=1)[0]
+            vec2 = [float(x) for x in emb_list2[0][1].split(',')]
             if len(vec1) != len(vec2):
                 raise HTTPException(status_code=400, detail="Embedding dimensions do not match.")
             score = compute_similarity(vec1, vec2, request.metric)
@@ -161,9 +172,9 @@ def search_endpoint(request: SearchRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
     
     try:
-        query_emb_list = get_gin_embedding(model, graph_encoding, request.structure, device)
-        query_emb_str = query_emb_list[0][1]
-        query_vector = [float(x) for x in query_emb_str.split(',')]
+        # Pass list for consistency
+        query_emb_list = get_gin_embedding(model, graph_encoding, [request.structure], device, batch_size=1, cpus=1)[0]
+        query_vector = [float(x) for x in query_emb_list[0][1].split(',')]
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error computing query embedding: {str(e)}")
     
@@ -178,16 +189,59 @@ def search_endpoint(request: SearchRequest, db: Session = Depends(get_db)):
             candidate_vectors.append(candidate_vec)
             valid_records.append(rec)
         
-        # Get batch size from environment or default to 512
         batch_size = int(os.getenv("BATCH_SIZE", 512))
         distances = calculate_query_distances(query_vector, candidate_vectors, request.metric, batch_size=batch_size)
-        
         scored = list(zip(distances, valid_records))
         scored.sort(key=lambda x: x[0])
         top30 = scored[:30]
-        
-        # Convert each result into a SearchResult instance
         top30_out = [SearchResult(embedding=EmbeddingOut.from_orm(rec), metric=dist) for dist, rec in top30]
         return SearchResponse(results=top30_out)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error searching database: {str(e)}")
+
+# New endpoint to compute embeddings from a batch of structures
+@app.post("/batch_embed", response_model=BatchEmbedResponse)
+def batch_embed_endpoint(request: BatchEmbedRequest):
+    # Validate all structures
+    for item in request.items:
+        try:
+            validate_structure(item.structure)
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Invalid structure for id {item.id}: {str(e)}")
+    
+    try:
+        # Extract structures from the request
+        structures = [item.structure for item in request.items]
+        # Compute embeddings (using L=None for a single embedding per structure)
+        emb_results = get_gin_embedding(model, graph_encoding, structures, device, L=None, batch_size=128, cpus=2)
+        # Prepare output: each emb_results element is a list with one tuple (None, embedding_string)
+        output = []
+        for idx, emb_list in enumerate(emb_results):
+            # Pick the first embedding from each result
+            embedding_str = emb_list[0][1]
+            output.append({"id": request.items[idx].id, "embedding": embedding_str})
+        return BatchEmbedResponse(embeddings=output)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error computing batch embeddings: {str(e)}")
+
+# New endpoint to process TSV file and add an embedding_vector column.
+@app.post("/tsv_embed")
+async def tsv_embed_endpoint(file: UploadFile = File(...)):
+    try:
+        content = await file.read()
+        df = pd.read_csv(io.StringIO(content.decode("utf-8")), sep="\t")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Invalid TSV file.")
+    
+    if not {"id", "secondary_structure"}.issubset(df.columns):
+        raise HTTPException(status_code=400, detail="TSV must contain 'id' and 'secondary_structure' columns.")
+    
+    # Compute embeddings for each structure (using L=None for a single embedding)
+    structures = df["secondary_structure"].tolist()
+    emb_results = get_gin_embedding(model, graph_encoding, structures, device, L=None, batch_size=128, cpus=2)
+    embeddings = [emb_list[0][1] for emb_list in emb_results]  # pick the first embedding from each result
+    
+    df["embedding_vector"] = embeddings
+    output = io.StringIO()
+    df.to_csv(output, sep="\t", index=False)
+    return Response(content=output.getvalue(), media_type="text/tab-separated-values")
