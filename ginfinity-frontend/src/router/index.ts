@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from 'vue-router'; // Cambié createWebHashHistory por createWebHistory
-import HomeView from '../views/HomeView.vue';
+import HomeView from '../views/home.vue';
 import ComparadorARN from '../views/compare.vue'; // Importa la vista ComparadorARN
 import CalcularEmbeddings from '../views/tsv_embed.vue'; // Importa la nueva vista
 
