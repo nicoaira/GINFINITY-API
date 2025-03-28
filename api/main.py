@@ -28,8 +28,8 @@ from fastapi.responses import FileResponse
 app = FastAPI(title="RNA Similarity API")
 app.include_router(health.router)
 
-# Mounts the frontend's built files (from Vue or another framework) to serve them as static files.
-app.mount("/", StaticFiles(directory="ginfinity-frontend/dist", html=True), name="frontend")
+# Mount static files on a dedicated subpath
+app.mount("/frontend", StaticFiles(directory="ginfinity-frontend/dist", html=True), name="frontend")
 
 @app.get("/{path_name}")
 async def catch_all(path_name: str):
