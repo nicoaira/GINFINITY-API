@@ -24,17 +24,12 @@ from api.routes import health
 from fastapi.staticfiles import StaticFiles 
 from fastapi.responses import FileResponse
 
-# Initialize FastAPI app
+# Initialize FastAPI app and include API routes first
 app = FastAPI(title="RNA Similarity API")
 app.include_router(health.router)
 
-# Mounts the frontend's built files (from Vue or another framework) to serve them as static files.
-app.mount("/", StaticFiles(directory="ginfinity-frontend/dist", html=True), name="frontend")
-
-@app.get("/{path_name}")
-async def catch_all(path_name: str):
-    return FileResponse("ginfinity-frontend/dist/index.html")
-
+# Mount static files on a dedicated subpath
+app.mount("/frontend", StaticFiles(directory="ginfinity-frontend/dist", html=True), name="frontend")
 
 # Set device and load the model once at startup
 device = "cuda" if torch.cuda.is_available() else "cpu"
