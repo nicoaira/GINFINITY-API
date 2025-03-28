@@ -27,7 +27,6 @@ from fastapi.responses import FileResponse
 # Initialize FastAPI app
 app = FastAPI(title="RNA Similarity API")
 app.include_router(health.router)
-app.include_router(productos_router, prefix="/api")
 
 # Mounts the frontend's built files (from Vue or another framework) to serve them as static files.
 app.mount("/", StaticFiles(directory="ginfinity-frontend/dist", html=True), name="frontend")
