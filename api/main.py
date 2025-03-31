@@ -31,6 +31,14 @@ app.include_router(health.router)
 # Mount static files on a dedicated subpath
 app.mount("/frontend", StaticFiles(directory="ginfinity-frontend/dist", html=True), name="frontend")
 
+@app.get("/{path_name}")
+async def catch_all(path_name: str):
+    return FileResponse("ginfinity-frontend/dist/index.html")
+
+
+# Mount static files on a dedicated subpath
+app.mount("/frontend", StaticFiles(directory="ginfinity-frontend/dist", html=True), name="frontend")
+
 # Set device and load the model once at startup
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model_checkpoint = os.getenv("MODEL_PATH", "models/model_weights.pth")

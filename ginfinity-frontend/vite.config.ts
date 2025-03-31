@@ -19,10 +19,15 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
       },
-      '/embed_from_file': {
+      '/tsv_embed': {
         target: 'http://localhost:8000',
         changeOrigin: true,
       },
+      '/batch_embed': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      }
+      
     }
   }
 })
