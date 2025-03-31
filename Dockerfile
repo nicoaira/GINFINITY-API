@@ -22,6 +22,8 @@ ENV PYTHONUNBUFFERED=1
 
 # Copy the entrypoint script
 COPY entrypoint.sh /entrypoint.sh
+RUN apt-get update && apt-get install -y dos2unix
+RUN dos2unix /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Use the entrypoint script to start the app
