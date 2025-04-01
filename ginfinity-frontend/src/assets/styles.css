@@ -1,0 +1,485 @@
+/* Global styles for the Ginfinity project */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+.html, body {
+  height: 100%;
+  font-family: 'Arial', sans-serif;
+}
+
+p{
+  font-size: 17px;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #049bdc;
+  color: white;
+  position: fixed; /* Fijar el encabezado */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: 60px;
+}
+
+.header .logo img {
+  height: 60px;
+}
+
+.navbar ul {
+  display: flex;
+  list-style: none;
+  gap: 20px;
+}
+
+.navbar ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.navbar ul li a:hover {
+  text-decoration: underline;
+}
+/*Home.vue styles*/
+.home-view {
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #f4f6f9; /* Fondo de color gris suave */
+}
+
+.section--bg {
+  max-width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4)), url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/UIC_Campus_Sant_Cugat.jpg/1200px-UIC_Campus_Sant_Cugat.jpg');
+  background-repeat: no-repeat, no-repeat;
+  background-size: cover, cover;
+  background-position: center, center;
+  background-attachment: fixed;
+}
+
+.section--bg h1 {
+  color: white;  /* Texto blanco para resaltar */
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);  /* Sombra para el texto */
+  font-weight: bold;  /* Hacer el texto más grueso */
+  -webkit-background-clip: text;
+  background-clip: text;  /* Aplicar el color de fondo solo al texto */
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.hero-content {
+  color: white;
+}
+
+.hero h1 {
+  font-size: 4rem;
+  font-weight: bold;
+}
+
+.hero h2 {
+  font-size: 2rem;
+  margin-top: 20px;
+}
+
+.hero .button {
+  background-color: #007b99;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.hero .button:hover {
+  background-color: #005f73;
+}
+
+.ginfinitytools {
+  padding: 40px;
+  background-color: #ffffff;
+  margin: 20px 0;
+}
+
+.ginfinitytools h3 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.ginfinitytools-content ul {
+  list-style: none;
+  padding-left: 20px;
+}
+
+.ginfinitytools-content ul li {
+  margin-bottom: 10px;
+}
+
+.tools-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+
+}
+
+.card {
+  background-color: #f4f6f9;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 200px;
+  height: 250px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card h4 {
+  margin-top: 15px;
+  font-size: 1.2rem;
+  color: #049bdc;
+}
+
+.card p {
+  margin-top: 10px;
+  color: #555;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card:active {
+  transform: translateY(2px);
+}
+
+.footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+}
+
+.footer p {
+  margin: 5px 0;
+}
+
+.footer a {
+  color: #ffb800;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.button.primary {
+  background-color: #049bdc;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.button.secondary {
+  background-color: #ffb800;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.button:hover {
+  opacity: 0.8;
+}
+
+.about, .publications, .team {
+  padding: 40px;
+  background-color: #ffffff;
+  margin: 20px 0;
+}
+
+.about h3, .publications h3, .team h3{
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.about-content, .card-container, .team-members {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.text, .image {
+  flex: 1;
+}
+
+.text p {
+  line-height: 1.6;
+}
+
+.card {
+  background-color: #f4f6f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 15%;
+}
+
+.card h4 {
+  margin-top: 15px;
+  font-size: 1.2rem;
+}
+
+.card p {
+  margin-top: 10px;
+  color: #555;
+}
+
+.team-member {
+  text-align: center;
+}
+
+.team-member img {
+  width: 100%;
+  height: 200px;
+  border-radius: 50%;
+}
+
+.team-member h4 {
+  font-size: 1.2rem;
+  margin-top: 10px;
+}
+
+.team-member p {
+  font-style: italic;
+}
+
+.footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+}
+
+.footer p {
+  margin: 5px 0;
+}
+
+.footer a {
+  color: #ffb800;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.button.primary {
+  background-color: #049bdc;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.button.secondary {
+  background-color: #ffb800;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.button:hover {
+  opacity: 0.8;
+}
+
+/* Compare.vue styles */
+.comparador {
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.comparador-content {
+  margin-top: 65px;
+  text-align: left;  /* Cambié a izquierda */
+}
+.compare-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.mb-5 {
+  box-shadow: none;
+}
+.sec-sequencias {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+textarea {
+  width: 100%;
+  max-width: 600px;
+  height: 80px;
+  padding: 15px;
+  border: 2px solid black;
+  border-radius: 10px;
+  font-size: 16px;
+  resize: none;
+  transition: all 0.3s ease;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: black;
+}
+
+.btn-comparar {
+  align-self: flex-start; 
+  padding: 14px 30px;
+  font-size: 15px;
+  font-weight: bold;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-comparar:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.btn-comparar:disabled {
+  background-color: #b0c4de;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.compare-result {
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.error {
+  color: #d9534f;
+  font-weight: bold;
+  margin-top: 15px;
+}
+.example-btn {
+  padding: 0;
+  font-size: 16px;
+  background-color: transparent;
+  color: black;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.compare-btn .btn-ejemplo:hover {
+  color: black;
+  text-decoration: underline;
+}
+
+.example-sequences {
+  display: inline-block;
+  text-align: center;
+  font-size: 1.2rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0 auto;
+}
+
+/*tsv.vue styles*/
+.tsv-uploader {
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  margin-top: 65px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+
+}
+
+.tsv-content {
+  margin-top: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.upload-card {
+  width: 900px;
+  box-shadow: none;
+  margin-left: 0;
+  padding-left: 0;
+  border-left: none;
+}
+
+.embed-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+input[type="file"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.upload-btn, .download-btn {
+  background-color: #049bdc;
+  color: white;
+  width: 100%;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.upload-btn:hover, .download-btn:hover {
+  background-color: #0387b8;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}

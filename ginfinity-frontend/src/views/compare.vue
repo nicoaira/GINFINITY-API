@@ -9,14 +9,14 @@
         <ul>
           <li><router-link to="/">Home</router-link></li>
           <li><router-link to="/comparar-arn">Compare Sequences</router-link></li>
-          <li><router-link to="/calcular-embeddings">Compare Embeddings</router-link></li>
+          <li><router-link to="/calcular-embeddings">Calcule Embeddings</router-link></li>
         </ul>
       </nav>
     </header>
 
     <!-- Comparador Section -->
     <div class="comparador-content">
-      <h2>Comparar Secuencias de ARN</h2>
+      <h2 class="compare-title">Comparador Secuencias de ARN</h2>
 
       <!-- Sección Explicativa -->
       <div class="explicacion">
@@ -57,9 +57,7 @@
         </v-card>
 
         <!-- Botón para añadir una secuencia de ejemplo -->
-        <div class="boton-ejemplo">
-          <button @click="añadirEjemplo" class="btn-ejemplo">Añadir Secuencias de Ejemplo</button>
-        </div>
+          <button @click="añadirEjemplo" class="example-btn">Añadir Secuencias de Ejemplo</button>
       </div>
 
       <!-- Formulario para comparar secuencias -->
@@ -73,7 +71,7 @@
 
       <!-- Resultado de la comparación alineado a la izquierda -->
       <p v-if="error" class="error">{{ error }}</p>
-      <p v-if="resultado !== null" class="resultado">{{ `Similitud: ${resultado}` }}</p>
+      <p v-if="resultado !== null" class="compare-result">{{ `Similitud: ${resultado}` }}</p>
     </div>
   </div>
 </template>
@@ -125,159 +123,3 @@ const añadirEjemplo = () => {
   secuencia2.value = '..((...))..';
 }
 </script>
-
-<style scoped>
-.comparador {
-  padding: 40px;
-  background-color: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.comparador-content {
-  margin-top: 60px;
-  text-align: left;  /* Cambié a izquierda */
-}
-
-h2 {
-  font-size: 2rem;
-  color: black;
-  margin-bottom: 20px;
-  font-weight: bold;
-}
-
-/* Alineación del formulario a la izquierda */
-.sec-sequencias {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-textarea {
-  width: 100%;
-  max-width: 600px;
-  height: 80px;
-  padding: 15px;
-  border: 2px solid black;
-  border-radius: 10px;
-  font-size: 16px;
-  resize: none;
-  transition: all 0.3s ease;
-}
-
-textarea:focus {
-  outline: none;
-  border-color: black;
-}
-
-.btn-comparar {
-  align-self: flex-start;  /* Alineación izquierda */
-  padding: 14px 30px;
-  font-size: 15px;
-  font-weight: bold;
-  color: white;
-  background-color: #007bff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-comparar:hover {
-  background-color: #0056b3;
-  transform: scale(1.05);
-}
-
-.btn-comparar:disabled {
-  background-color: #b0c4de;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Alineación del resultado a la izquierda */
-.resultado {
-  font-size: 20px;
-  font-weight: bold;
-  color: black;
-  margin-top: 20px;
-  text-align: left;  /* Alineación izquierda */
-}
-
-.error {
-  color: #d9534f;
-  font-weight: bold;
-  margin-top: 15px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background-color: #049bdc;
-  color: white;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  height: 60px;
-}
-
-.header .logo img {
-  height: 60px;
-}
-
-.navbar ul {
-  display: flex;
-  list-style: none;
-  gap: 20px;
-}
-
-.navbar ul li a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.navbar ul li a:hover {
-  text-decoration: underline;
-}
-
-/* Estilo para el botón de ejemplo como un link */
-.boton-ejemplo {
-  text-align: left;
-  margin-top: 20px;
-}
-
-.boton-ejemplo .btn-ejemplo {
-  padding: 0;
-  font-size: 16px;
-  background-color: transparent;
-  color: black;
-  border: none;
-  text-decoration: underline;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 10px;
-}
-
-.boton-ejemplo .btn-ejemplo:hover {
-  color: black;
-  text-decoration: underline;
-}
-
-/* Estilo para el bloque de texto de las secuencias */
-.example-sequences {
-  display: inline-block;
-  text-align: center;
-  font-size: 1.2rem;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  margin: 0 auto;
-}
-</style>
