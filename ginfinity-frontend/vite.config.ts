@@ -23,10 +23,10 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
       },
-      '/batch_embed': {
-        target: 'http://localhost:8000',
-        changeOrigin: true,
-      }
+      // '/send_email': {
+      //   target: 'http://localhost:8000',
+      //   changeOrigin: true,
+      // }
       
     }
   }

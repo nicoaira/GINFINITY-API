@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Response
+from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Response, Form
 from pydantic import BaseModel, Field
 import os
 import torch
@@ -20,25 +20,24 @@ from db.models import Embedding
 # Import health router
 from api.routes import health
 
-# Imports the StaticFiles class to serve static files
-from fastapi.staticfiles import StaticFiles 
-from fastapi.responses import FileResponse
+# Middleware to enable CORS in FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+#Import email sender
+# import shutil
+# import yagmail
 
 # Initialize FastAPI app and include API routes first
 app = FastAPI(title="RNA Similarity API")
 app.include_router(health.router)
 
-# Mount static files on a dedicated subpath
-app.mount("/frontend", StaticFiles(directory="ginfinity-frontend/dist", html=True), name="frontend")
-
-@app.get("/{path_name}")
-async def catch_all(path_name: str):
-    return FileResponse("ginfinity-frontend/dist/index.html")
-
-
-# Mount static files on a dedicated subpath
-app.mount("/frontend", StaticFiles(directory="ginfinity-frontend/dist", html=True), name="frontend")
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*", "http://localhost:5173"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Set device and load the model once at startup
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model_checkpoint = os.getenv("MODEL_PATH", "models/model_weights.pth")
@@ -247,3 +246,20 @@ async def tsv_embed_endpoint(file: UploadFile = File(...)):
     output = io.StringIO()
     df.to_csv(output, sep="\t", index=False)
     return Response(content=output.getvalue(), media_type="text/tab-separated-values")
+
+# @app.post("/send_email")
+# async def send_email(file: UploadFile, email: str = Form(...)):
+#     file_path = f"temp_{file.filename}"
+    
+#     # Guardar archivo temporalmente
+#     with open(file_path, "wb") as buffer:
+#         shutil.copyfileobj(file.file, buffer)
+
+#     # Enviar correo
+#     yag = yagmail.SMTP(EMAIL_EMISOR, EMAIL_PASSWORD)
+#     yag.send(to=email, subject="Tu archivo TSV procesado", contents="Adjunto el archivo actualizado.", attachments=[file_path])
+
+#     # Eliminar archivo temporal
+#     os.remove(file_path)
+    
+#     return {"message": f"Archivo enviado a {email}"}
