@@ -19,7 +19,7 @@ p{
   padding: 20px;
   background-color: #049bdc;
   color: white;
-  position: fixed; /* Fijar el encabezado */
+  position: fixed; 
   top: 0;
   left: 0;
   right: 0;
@@ -54,7 +54,7 @@ p{
   margin: 0;
   height: 100%;
   width: 100%;
-  background-color: #f4f6f9; /* Fondo de color gris suave */
+  background-color: #f4f6f9; 
 }
 
 .section--bg {
@@ -74,11 +74,11 @@ p{
 }
 
 .section--bg h1 {
-  color: white;  /* Texto blanco para resaltar */
-  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);  /* Sombra para el texto */
-  font-weight: bold;  /* Hacer el texto más grueso */
+  color: white;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);  
+  font-weight: bold;
   -webkit-background-clip: text;
-  background-clip: text;  /* Aplicar el color de fondo solo al texto */
+  background-clip: text; 
   padding: 10px;
   border-radius: 10px;
 }
@@ -327,7 +327,7 @@ p{
 
 .comparador-content {
   margin-top: 65px;
-  text-align: left;  /* Cambié a izquierda */
+  text-align: left;
 }
 .compare-title {
   font-size: 24px;
