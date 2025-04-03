@@ -3,75 +3,75 @@
     <!-- Header -->
     <header class="header">
       <div class="logo">
-        <img src="@/assets/logo.png" alt="Ginfinity Logo" />
+        <router-link to="/">
+          <img src="@/assets/logo.png" alt="Ginfinity Logo" />
+        </router-link>
       </div>
       <nav class="navbar">
         <ul>
           <li><router-link to="/">Home</router-link></li>
           <li><router-link to="/comparar-arn">Compare Sequences</router-link></li>
-          <li><router-link to="/calcular-embeddings">Calcule Embeddings</router-link></li>
+          <li><router-link to="/calcular-embeddings">Calculate Embeddings</router-link></li>
         </ul>
       </nav>
     </header>
 
     <!-- Comparador Section -->
     <div class="comparador-content">
-      <h2 class="compare-title">Comparador Secuencias de ARN</h2>
+      <h2 class="compare-title">RNA Sequence Comparator</h2>
 
-      <!-- Sección Explicativa -->
+      <!-- Explanation Section -->
       <div class="explicacion">
         <v-card class="mb-5">
           <v-card-text>
             <p>
-              En esta sección, puedes comparar las estructuras secundarias de ARN para ver qué tan similares son entre
-              sí. El ARN tiene una estructura que se puede representar mediante una notación especial llamada
-              <strong>dot-bracket</strong>, donde los pares de bases están representados por paréntesis y las bases no
-              emparejadas por puntos.
+              In this section, you can compare RNA secondary structures to see how similar they are to each other.
+              RNA has a structure that can be represented using a special notation called
+              <strong>dot-bracket</strong>, where base pairs are represented by parentheses and unpaired bases by dots.
             </p>
 
             <v-divider class="my-4"></v-divider>
 
-            <h3>1. Introduce las secuencias de ARN</h3>
+            <h3>1. Enter the RNA sequences</h3>
             <p>
-              Tienes que ingresar dos secuencias de ARN en formato <strong>dot-bracket</strong>. Asegúrate de que no
-              tengan espacios.
+              You need to enter two RNA sequences in <strong>dot-bracket</strong> format. Make sure they don't have spaces.
             </p>
 
-            <h3>2. Ejemplo de secuencias:</h3>
+            <h3>2. Example sequences:</h3>
             <p class="example-sequences">
               ..((((...))))..<br>
               ..((...))..
             </p>
 
             <p>
-              Cada secuencia de ARN debe estar en formato <strong>dot-bracket</strong>, que usa puntos <code>.</code>
-              para representar bases no emparejadas y paréntesis <code>()</code> para las bases que están emparejadas.
+              Each RNA sequence must be in <strong>dot-bracket</strong> format, where dots <code>.</code>
+              represent unpaired bases and parentheses <code>()</code> represent paired bases.
             </p>
 
-            <h3>3. Compara las secuencias</h3>
+            <h3>3. Compare the sequences</h3>
             <p>
-              El sistema analizará las estructuras y calculará una puntuación que indica cuán similares son entre sí.
-              Cuanto más baja sea la puntuación, más similares son las estructuras.
+              The system will analyze the structures and calculate a score indicating how similar they are to each other.
+              The lower the score, the more similar the structures are.
             </p>
           </v-card-text>
         </v-card>
 
-        <!-- Botón para añadir una secuencia de ejemplo -->
-          <button @click="añadirEjemplo" class="example-btn">Añadir Secuencias de Ejemplo</button>
+        <!-- Button to add example sequence -->
+        <button @click="addExample" class="example-btn">Add Example Sequences</button>
       </div>
 
-      <!-- Formulario para comparar secuencias -->
+      <!-- Form to compare sequences -->
       <div class="sec-sequencias">
-        <textarea v-model="secuencia1" placeholder="Introduce la primera secuencia"></textarea>
-        <textarea v-model="secuencia2" placeholder="Introduce la segunda secuencia"></textarea>
+        <textarea v-model="secuencia1" placeholder="Enter the first sequence"></textarea>
+        <textarea v-model="secuencia2" placeholder="Enter the second sequence"></textarea>
       </div>
-      <button @click="compararARN" :disabled="cargando" class="btn-comparar">
-        {{ cargando ? "Comparando..." : "Comparar" }}
+      <button @click="compareRNA" :disabled="loading" class="btn-comparar">
+        {{ loading ? "Comparing..." : "Compare" }}
       </button>
 
-      <!-- Resultado de la comparación alineado a la izquierda -->
+      <!-- Comparison result aligned to the left -->
       <p v-if="error" class="error">{{ error }}</p>
-      <p v-if="resultado !== null" class="compare-result">{{ `Similitud: ${resultado}` }}</p>
+      <p v-if="result !== null" class="compare-result">{{ `Similarity: ${result}` }}</p>
     </div>
   </div>
 </template>
@@ -83,19 +83,19 @@ import { VCard, VCardText, VDivider } from 'vuetify/components'
 
 const secuencia1 = ref('')
 const secuencia2 = ref('')
-const resultado = ref(null)
-const cargando = ref(false)
+const result = ref(null)
+const loading = ref(false)
 const error = ref(null)
 
-const compararARN = async () => {
+const compareRNA = async () => {
   if (!secuencia1.value || !secuencia2.value) {
-    error.value = 'Por favor, introduce ambas secuencias.'
+    error.value = 'Please enter both sequences.'
     return
   }
 
   error.value = null
-  cargando.value = true
-  resultado.value = null
+  loading.value = true
+  result.value = null
 
   const config = {
     headers: {
@@ -109,16 +109,16 @@ const compararARN = async () => {
       structure2: secuencia2.value,
       metric: 'squared',
     }, config);
-    resultado.value = response.data.similarity_score;
+    result.value = response.data.similarity_score;
   } catch (err) {
-    error.value = 'Hubo un error al comparar las secuencias.';
+    error.value = 'There was an error comparing the sequences.';
   } finally {
-    cargando.value = false;
+    loading.value = false;
   }
 }
 
-// Función para añadir un ejemplo de secuencia
-const añadirEjemplo = () => {
+// Function to add an example sequence
+const addExample = () => {
   secuencia1.value = '..((((...))))..';
   secuencia2.value = '..((...))..';
 }

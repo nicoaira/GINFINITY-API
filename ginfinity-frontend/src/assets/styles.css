@@ -29,6 +29,7 @@ p{
 
 .header .logo img {
   height: 60px;
+  width: 60px;
 }
 
 .navbar ul {
@@ -433,7 +434,6 @@ textarea:focus {
   margin: 0 auto;
   margin-top: 65px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-
 }
 
 .tsv-content {

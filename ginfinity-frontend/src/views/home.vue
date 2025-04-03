@@ -3,7 +3,9 @@
     <!-- Header -->
     <header class="header">
       <div class="logo">
-        <img src="@/assets/logo.png" alt="Ginfinity Logo" />
+        <router-link to="/">
+          <img src="@/assets/logo.png" alt="Ginfinity Logo" />
+        </router-link>
       </div>
       <nav class="navbar">
         <ul>
@@ -118,7 +120,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <p>© 2021 Universitat Internacional de Catalunya</p>
+      <p>© 2025 Universitat Internacional de Catalunya</p>
       <p>
         Legal advice
         Cookies Policy | 

@@ -2,39 +2,40 @@
   <div class="tsv-uploader">
     <header class="header">
       <div class="logo">
-        <img src="@/assets/logo.png" alt="Ginfinity Logo" />
+        <router-link to="/">
+          <img src="@/assets/logo.png" alt="Ginfinity Logo" />
+        </router-link>
       </div>
       <nav class="navbar">
         <ul>
           <li><router-link to="/">Home</router-link></li>
           <li><router-link to="/comparar-arn">Compare Sequences</router-link></li>
-          <li><router-link to="/calcular-embeddings">Calcule Embeddings</router-link></li>
+          <li><router-link to="/calcular-embeddings">Calculate Embeddings</router-link></li>
         </ul>
       </nav>
     </header>
 
-    <h2 class="embed-title">Cálculo de Embeddings para Estructuras Secundarias de ARN</h2>
+    <h2 class="embed-title">Embedding Calculation for RNA Secondary Structures</h2>
 
     <div class="explicacion">
       <v-card class="mb-5">
         <v-card-text>
           <p>
-            En esta sección, puedes cargar un archivo TSV que contenga al menos dos columnas: <strong>id</strong> y
+            In this section, you can upload a TSV file containing at least two columns: <strong>id</strong> and
             <strong>secondary_structure</strong>.
-            El sistema calculará un embedding para cada estructura secundaria de ARN contenida en la columna
-            <strong>secondary_structure</strong>.
+            The system will calculate an embedding for each RNA secondary structure contained in the <strong>secondary_structure</strong> column.
           </p>
 
           <v-divider class="my-4"></v-divider>
 
-          <h3>1. Subir el archivo TSV</h3>
+          <h3>1. Upload the TSV file</h3>
           <p>
-            Para usar este servicio, primero debes subir un archivo TSV que contenga las columnas <strong>id</strong> y
-            <strong>secondary_structure</strong>.
-            Asegúrate de que el archivo esté bien formateado y que las columnas tengan los nombres correctos.
+            To use this service, you must first upload a TSV file containing the <strong>id</strong> and
+            <strong>secondary_structure</strong> columns.
+            Make sure the file is properly formatted and the columns have the correct names.
           </p>
 
-          <h3>2. Ejemplo de archivo TSV:</h3>
+          <h3>2. Example of a TSV file:</h3>
           <p class="example-sequences">
             id secondary_structure<br>
             seq1 ..((((...))))..<br>
@@ -42,39 +43,38 @@
           </p>
 
           <p>
-            Cada fila debe contener un identificador único en la columna <strong>id</strong> y una estructura secundaria
-            de ARN en formato <strong>dot-bracket</strong>
-            en la columna <strong>secondary_structure</strong>.
+            Each row should contain a unique identifier in the <strong>id</strong> column and an RNA secondary structure
+            in <strong>dot-bracket</strong> format in the <strong>secondary_structure</strong> column.
           </p>
 
-          <h3>3. Proceso de cálculo de embeddings</h3>
+          <h3>3. Embedding calculation process</h3>
           <p>
-            El sistema procesará el archivo, calculará un embedding para cada estructura secundaria y agregará una nueva
-            columna <strong>embedding_vector</strong> al archivo original.
-            El archivo resultante estará listo para descargar.
+            The system will process the file, calculate an embedding for each secondary structure, and add a new
+            <strong>embedding_vector</strong> column to the original file.
+            The resulting file will be ready for download.
           </p>
 
-          <h3>4. Descargar el archivo actualizado</h3>
+          <h3>4. Download the updated file</h3>
           <p>
-            Después de procesar el archivo, podrás descargar el archivo con los embeddings generados.
+            After processing the file, you will be able to download the file with the generated embeddings.
           </p>
         </v-card-text>
       </v-card>
 
       <button class="example-btn" @click="downloadExampleFile">
-        Descargar archivo de ejemplo
+        Download Example File
       </button>
     </div>
 
     <div class="tsv-content">
       <v-card class="upload-card">
-        <v-card-title>
-          <h3>Subir archivo TSV</h3>
+        <v-card-title class="upload-card-title">
+          <h3>Upload TSV File</h3>
         </v-card-title>
 
         <v-card-text>
 
-          <v-file-input v-model="file" label="Selecciona o arrastra un archivo TSV" accept=".tsv" outlined
+          <v-file-input v-model="file" label="Select or drag a TSV file" accept=".tsv" outlined class="file-input"
             @change="handleFileUpload"></v-file-input>
         </v-card-text>
 
@@ -83,18 +83,19 @@
         <v-row>
           <v-col>
             <v-btn @click="processFile" :disabled="!file" class="upload-btn" block>
-              Subir archivo
+              Upload File
             </v-btn>
           </v-col>
         </v-row>
 
-        <v-row justify="center" text-align="center">
-          <v-col cols="12" md="8">
+        <v-row>
+          <v-col>
             <v-btn v-if="downloadUrl" :href="downloadUrl" download="updated_file.tsv" class="download-btn" block>
-              Descargar archivo actualizado
+              Download Updated File
             </v-btn>
           </v-col>
         </v-row>
+
       </v-card>
     </div>
   </div>
@@ -107,12 +108,12 @@ import { VCard, VCardText, VFileInput, VContainer, VRow, VBtn, VCardTitle, VCol,
 const file = ref(null);
 const downloadUrl = ref(null);
 const errorMessage = ref(null);
-let previousFileData = null; 
+let previousFileData = null;
 
 const handleFileUpload = (event) => {
   const uploadedFile = event.target.files[0];
 
-  downloadUrl.value = null; 
+  downloadUrl.value = null;
   errorMessage.value = null;
 
   if (uploadedFile && uploadedFile.name.endsWith('.tsv')) {
@@ -122,17 +123,17 @@ const handleFileUpload = (event) => {
     reader.onload = (e) => {
       const content = e.target.result;
       const rows = content.split('\n');
-      const header = rows[0].split('\t'); 
+      const header = rows[0].split('\t');
 
       if (previousFileData && previousFileData !== content) {
-        errorMessage.value = 'Las secuencias han cambiado. Se actualizarán los embeddings.';
+        errorMessage.value = '';
       }
 
       previousFileData = content;
     };
     reader.readAsText(uploadedFile);
   } else {
-    errorMessage.value = 'Por favor, sube un archivo TSV válido.';
+    errorMessage.value = 'Please upload a valid TSV file.';
     file.value = null;
   }
 };
@@ -150,10 +151,10 @@ const processFile = async () => {
     });
 
     if (!response.ok) {
-      if (response.status === 400) { 
-        errorMessage.value = 'El formato del archivo no es válido. Por favor, revisa el archivo y vuelve a intentarlo.';
+      if (response.status === 400) {
+        errorMessage.value = 'The file format is invalid. Please check the file and try again.';
       } else {
-        throw new Error('Error al procesar el archivo.');
+        throw new Error('Error processing the file.');
       }
       return;
     }
@@ -161,7 +162,7 @@ const processFile = async () => {
     const updatedFile = await response.blob();
     downloadUrl.value = URL.createObjectURL(updatedFile);
   } catch (error) {
-    console.error('Error al procesar el archivo:', error);
+    console.error('Error processing the file:', error);
   }
 };
 
