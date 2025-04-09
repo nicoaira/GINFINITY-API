@@ -152,7 +152,7 @@ const processFile = async () => {
 
     if (!response.ok) {
       if (response.status === 400) {
-        errorMessage.value = 'The file format is invalid. Please check the file and try again.';
+        errorMessage.value = 'The file format is not valid. Please check the file and try again.';
       } else {
         throw new Error('Error processing the file.');
       }
