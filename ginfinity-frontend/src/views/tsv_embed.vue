@@ -1,20 +1,5 @@
 <template>
   <div class="tsv-uploader">
-    <header class="header">
-      <div class="logo">
-        <router-link to="/">
-          <img src="@/assets/logo.png" alt="Ginfinity Logo" />
-        </router-link>
-      </div>
-      <nav class="navbar">
-        <ul>
-          <li><router-link to="/">Home</router-link></li>
-          <li><router-link to="/comparar-arn">Compare Sequences</router-link></li>
-          <li><router-link to="/calcular-embeddings">Calculate Embeddings</router-link></li>
-        </ul>
-      </nav>
-    </header>
-
     <h2 class="embed-title">Embedding Calculation for RNA Secondary Structures</h2>
 
     <div class="explicacion">
@@ -23,7 +8,8 @@
           <p>
             In this section, you can upload a TSV file containing at least two columns: <strong>id</strong> and
             <strong>secondary_structure</strong>.
-            The system will calculate an embedding for each RNA secondary structure contained in the <strong>secondary_structure</strong> column.
+            The system will calculate an embedding for each RNA secondary structure contained in the
+            <strong>secondary_structure</strong> column.
           </p>
 
           <v-divider class="my-4"></v-divider>

@@ -1,21 +1,5 @@
 <template>
   <div class="comparador">
-    <!-- Header -->
-    <header class="header">
-      <div class="logo">
-        <router-link to="/">
-          <img src="@/assets/logo.png" alt="Ginfinity Logo" />
-        </router-link>
-      </div>
-      <nav class="navbar">
-        <ul>
-          <li><router-link to="/">Home</router-link></li>
-          <li><router-link to="/comparar-arn">Compare Sequences</router-link></li>
-          <li><router-link to="/calcular-embeddings">Calculate Embeddings</router-link></li>
-        </ul>
-      </nav>
-    </header>
-
     <!-- Comparador Section -->
     <div class="comparador-content">
       <h2 class="compare-title">RNA Sequence Comparator</h2>
@@ -34,7 +18,8 @@
 
             <h3>1. Enter the RNA sequences</h3>
             <p>
-              You need to enter two RNA sequences in <strong>dot-bracket</strong> format. Make sure they don't have spaces.
+              You need to enter two RNA sequences in <strong>dot-bracket</strong> format. Make sure they don't have
+              spaces.
             </p>
 
             <h3>2. Example sequences:</h3>
@@ -50,7 +35,8 @@
 
             <h3>3. Compare the sequences</h3>
             <p>
-              The system will analyze the structures and calculate a score indicating how similar they are to each other.
+              The system will analyze the structures and calculate a score indicating how similar they are to each
+              other.
               The lower the score, the more similar the structures are.
             </p>
           </v-card-text>

@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from 'vue-router'; // Cambié createWe
 import HomeView from '../views/home.vue';
 import ComparadorARN from '../views/compare.vue'; // Importa la vista ComparadorARN
 import CalcularEmbeddings from '../views/tsv_embed.vue'; // Importa la nueva vista
+import Help from '../views/help.vue'; // Importa la nueva vista
 
 const routes = [
   {
@@ -22,6 +23,12 @@ const routes = [
     component: CalcularEmbeddings,
     meta: { title: 'Calcular Embeddings' }, // Título para esta ruta
   },
+  {
+    path: '/help', // Ruta para la nueva vista
+    name: 'help',
+    component: Help,
+    meta: { title: 'Help' }, // Título para esta ruta
+  }
 ];
 
 const router = createRouter({

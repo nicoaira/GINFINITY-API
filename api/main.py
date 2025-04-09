@@ -24,8 +24,8 @@ from api.routes import health
 from fastapi.middleware.cors import CORSMiddleware
 
 #Import email sender
-# import shutil
-# import yagmail
+#import shutil
+#import yagmail
 
 # Initialize FastAPI app and include API routes first
 app = FastAPI(title="RNA Similarity API")
@@ -247,19 +247,19 @@ async def tsv_embed_endpoint(file: UploadFile = File(...)):
     df.to_csv(output, sep="\t", index=False)
     return Response(content=output.getvalue(), media_type="text/tab-separated-values")
 
- @app.post("/send_email")
- async def send_email(file: UploadFile, email: str = Form(...)):
-     file_path = f"temp_{file.filename}"
+#  @app.post("/send_email")
+#  async def send_email(file: UploadFile, email: str = Form(...)):
+#      file_path = f"temp_{file.filename}"
     
-     # Guardar archivo temporalmente
-     with open(file_path, "wb") as buffer:
-         shutil.copyfileobj(file.file, buffer)
+#      # Guardar archivo temporalmente
+#      with open(file_path, "wb") as buffer:
+#          shutil.copyfileobj(file.file, buffer)
 
-     # Enviar correo
-     yag = yagmail.SMTP(EMAIL_EMISOR, EMAIL_PASSWORD)
-     yag.send(to=email, subject="Tu archivo TSV procesado", contents="Adjunto el archivo actualizado.", attachments=[file_path])
+#      # Enviar correo
+#      yag = yagmail.SMTP(EMAIL_EMISOR, EMAIL_PASSWORD)
+#      yag.send(to=email, subject="Tu archivo TSV procesado", contents="Adjunto el archivo actualizado.", attachments=[file_path])
 
-     # Eliminar archivo temporal
-     os.remove(file_path)
+#      # Eliminar archivo temporal
+#      os.remove(file_path)
     
-     return {"message": f"Archivo enviado a {email}"}
+#      return {"message": f"Archivo enviado a {email}"}

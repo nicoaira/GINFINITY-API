@@ -1,485 +1,560 @@
-/* Global styles for the Ginfinity project */
-* {
-  box-sizing: border-box;
+/* Estilos generales para la aplicación */
+html {
+  font-size: 14px;
+  font-family: 'Arial', sans-serif; 
+  line-height: 1.6; 
+  background-color: #F8F7F2; 
+  color: #3B564D; /* Color del texto */
+}
+
+body {
   margin: 0;
   padding: 0;
 }
-.html, body {
-  height: 100%;
-  font-family: 'Arial', sans-serif;
+
+h1, h2, h3 {
+  color: #3B564D; 
+}
+h3{
+  font-size: 1.3rem; 
+  color: #3B564D; 
 }
 
-p{
-  font-size: 17px;
+p {
+  font-size: 1.2rem; 
+  color: #3B564D; 
 }
+
+/* Estilo general del header */
 .header {
+  background-color: #3B564D;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  background-color: #049bdc;
-  color: white;
-  position: fixed; 
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  height: 60px;
+  padding: 15px 40px;
+  height: 90px;
 }
 
-.header .logo img {
-  height: 60px;
-  width: 60px;
+.logo {
+  margin-right: auto;
 }
 
-.navbar ul {
+.navbar {
   display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+.navbar-list {
+  display: flex;
+  gap: 30px;
   list-style: none;
-  gap: 20px;
-}
-
-.navbar ul li a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.navbar ul li a:hover {
-  text-decoration: underline;
-}
-/*Home.vue styles*/
-.home-view {
-  font-family: 'Arial', sans-serif;
-  color: #333;
   padding: 0;
   margin: 0;
-  height: 100%;
+  animation: fadeUp 0.5s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.nav-item {
+  opacity: 0;
+  transform: translateY(15px);
+  animation: fadeUpLi 0.4s ease forwards;
+  animation-delay: var(--delay);
+}
+
+.nav-item a {
+  color: #F8F7F2;
+  text-decoration: none; 
+  font-weight: bold;
+  font-size: 18px; 
+  text-transform: uppercase; 
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-item a:hover {
+  color: #E8E6DA;
+}
+
+.nav-item a::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
   width: 100%;
-  background-color: #f4f6f9; 
+  height: 2px;
+  background-color: #E8E6DA;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease;
 }
 
-.section--bg {
-  max-width: 100%;
-  height: 100vh;
+.nav-item a:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeUpLi {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ScrollToTop button styles */
+.scroll-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #3b564d;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  padding: 12px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  font-size: 3rem;
-  text-align: center;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4)), url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/UIC_Campus_Sant_Cugat.jpg/1200px-UIC_Campus_Sant_Cugat.jpg');
-  background-repeat: no-repeat, no-repeat;
-  background-size: cover, cover;
-  background-position: center, center;
-  background-attachment: fixed;
-}
-
-.section--bg h1 {
-  color: white;
-  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);  
-  font-weight: bold;
-  -webkit-background-clip: text;
-  background-clip: text; 
-  padding: 10px;
-  border-radius: 10px;
-}
-
-.hero-content {
-  color: white;
-}
-
-.hero h1 {
-  font-size: 4rem;
-  font-weight: bold;
-}
-
-.hero h2 {
-  font-size: 2rem;
-  margin-top: 20px;
-}
-
-.hero .button {
-  background-color: #007b99;
-  color: white;
-  padding: 10px 20px;
-  text-decoration: none;
-  border-radius: 5px;
-  font-weight: bold;
-  margin-top: 20px;
-}
-
-.hero .button:hover {
-  background-color: #005f73;
-}
-
-.ginfinitytools {
-  padding: 40px;
-  background-color: #ffffff;
-  margin: 20px 0;
-}
-
-.ginfinitytools h3 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.ginfinitytools-content ul {
-  list-style: none;
-  padding-left: 20px;
-}
-
-.ginfinitytools-content ul li {
-  margin-bottom: 10px;
-}
-
-.tools-cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
   justify-content: center;
-  margin-top: 20px;
-
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.2s ease;
 }
 
-.card {
-  background-color: #f4f6f9;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+.scroll-to-top:hover {
+  transform: scale(1.05);
+}
+
+.scroll-to-top img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Home.vue styles */
+.home-container {
+  font-family: Arial, sans-serif;
+  background-color: #f8f7f2;
+}
+
+.intro-banner {
+  background-image: url('@/assets/banner.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  aspect-ratio: 16 / 6;
+  position: relative;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Para pantallas pequeñas, mantenemos buena proporción */
+@media (max-width: 768px) {
+  .intro-banner {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 480px) {
+  .intro-banner {
+    aspect-ratio: 16 / 12;
+  }
+}
+.features,
+.intro-text-container {
   text-align: center;
-  width: 200px;
-  height: 250px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 40px;
 }
 
-.card h4 {
-  margin-top: 15px;
-  font-size: 1.2rem;
-  color: #049bdc;
+.features h2 {
+  font-size: 2.5rem;
+  color: #3b564d;
+  margin-bottom: 30px;
 }
 
-.card p {
-  margin-top: 10px;
-  color: #555;
+.feature-cards {
+  display: flex;
+  justify-content: space-around;
+  gap: 30px;
+}
+.intro-p{
+  max-width: 500px;
+}
+.card {
+  background-color: #ffffff;
+  padding: 20px;
+  width: 30%;
+  border-radius: 10px;
+  transition: transform 0.3s;
 }
 
 .card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-.card:active {
-  transform: translateY(2px);
+.card-title {
+  font-size: 1.8rem;
+  color: #3b564d;
 }
 
-.footer {
-  text-align: center;
-  padding: 10px;
-  background-color: #333;
-  color: white;
-}
-
-.footer p {
-  margin: 5px 0;
-}
-
-.footer a {
-  color: #ffb800;
-  text-decoration: none;
-}
-
-.footer a:hover {
-  text-decoration: underline;
-}
-
-.button.primary {
-  background-color: #049bdc;
-  color: white;
-  padding: 10px 20px;
-  text-decoration: none;
-  border-radius: 5px;
-}
-
-.button.secondary {
-  background-color: #ffb800;
-  color: white;
-  padding: 10px 20px;
-  text-decoration: none;
-  border-radius: 5px;
-}
-
-.button:hover {
-  opacity: 0.8;
-}
-
-.about, .publications, .team {
-  padding: 40px;
-  background-color: #ffffff;
-  margin: 20px 0;
-}
-
-.about h3, .publications h3, .team h3{
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.about-content, .card-container, .team-members {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.text, .image {
-  flex: 1;
-}
-
-.text p {
-  line-height: 1.6;
-}
-
-.card {
-  background-color: #f4f6f9;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  width: 15%;
-}
-
-.card h4 {
-  margin-top: 15px;
+.card-text {
   font-size: 1.2rem;
+  color: #728ea6;
+  margin-bottom: 15px;
 }
 
-.card p {
-  margin-top: 10px;
-  color: #555;
+.btn-learn-more {
+  background-color: #f8f7f2;
+  color: #3b564d;
+  padding: 10px 18px;
+  border: 1px solid #b9c5b1;
+  border-radius: 5px;
+  text-decoration: none;
 }
 
-.team-member {
+.stats {
   text-align: center;
+  margin-bottom: 40px;
+  background-color: #f2f2f2;
+  padding: 40px 20px;
+  border-radius: 10px;
 }
 
-.team-member img {
-  width: 100%;
-  height: 200px;
-  border-radius: 50%;
+.stats h2 {
+  font-size: 2.5rem;
+  color: #3b564d;
+  margin-bottom: 30px;
 }
 
-.team-member h4 {
+.stats-grid {
+  display: flex;
+  justify-content: space-around;
+  gap: 40px;
+}
+
+.stat h3 {
+  font-size: 2.5rem;
+  color: #3b564d;
+  margin-bottom: 10px;
+}
+
+.stat p {
+  font-size: 1.2rem;
+  color: #728ea6;
+}
+
+.research {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.research h2 {
+  font-size: 2.5rem;
+  color: #3b564d;
+}
+
+.research-text {
   font-size: 1.2rem;
   margin-top: 10px;
 }
 
-.team-member p {
-  font-style: italic;
-}
-
-.footer {
-  text-align: center;
-  padding: 10px;
-  background-color: #333;
+.research .btn-learn-more {
+  background-color: #3b564d;
   color: white;
-}
-
-.footer p {
-  margin: 5px 0;
-}
-
-.footer a {
-  color: #ffb800;
-  text-decoration: none;
-}
-
-.footer a:hover {
-  text-decoration: underline;
-}
-
-.button.primary {
-  background-color: #049bdc;
-  color: white;
-  padding: 10px 20px;
-  text-decoration: none;
-  border-radius: 5px;
-}
-
-.button.secondary {
-  background-color: #ffb800;
-  color: white;
-  padding: 10px 20px;
-  text-decoration: none;
-  border-radius: 5px;
-}
-
-.button:hover {
-  opacity: 0.8;
-}
-
-/* Compare.vue styles */
-.comparador {
-  padding: 40px;
-  background-color: #ffffff;
-  border-radius: 15px;
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-}
-
-.comparador-content {
-  margin-top: 65px;
-  text-align: left;
-}
-.compare-title {
-  font-size: 24px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-.mb-5 {
-  box-shadow: none;
-}
-.sec-sequencias {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-textarea {
-  width: 100%;
-  max-width: 600px;
-  height: 80px;
-  padding: 15px;
-  border: 2px solid black;
-  border-radius: 10px;
-  font-size: 16px;
-  resize: none;
-  transition: all 0.3s ease;
-}
-
-textarea:focus {
-  outline: none;
-  border-color: black;
-}
-
-.btn-comparar {
-  align-self: flex-start; 
-  padding: 14px 30px;
-  font-size: 15px;
-  font-weight: bold;
-  color: white;
-  background-color: #007bff;
-  border: none;
+  padding: 12px 25px;
   border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  text-decoration: none;
 }
 
-.btn-comparar:hover {
-  background-color: #0056b3;
-  transform: scale(1.05);
+.research .btn-learn-more:hover {
+  background-color: #728ea6;
+}
+/* Compare view styles */
+.comparador {
+  background-color: #F8F7F2;
+  padding: 40px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
-.btn-comparar:disabled {
-  background-color: #b0c4de;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.compare-result {
-  font-size: 20px;
+.compare-title {
+  font-size: 2.5rem;
+  color: #3B564D;
+  margin-bottom: 20px;
   font-weight: bold;
-  color: black;
-  margin-top: 20px;
-  text-align: left;
+  text-align: center;
 }
 
-.error {
-  color: #d9534f;
-  font-weight: bold;
-  margin-top: 15px;
-}
-.example-btn {
-  padding: 0;
-  font-size: 16px;
-  background-color: transparent;
-  color: black;
-  border: none;
-  text-decoration: underline;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-.compare-btn .btn-ejemplo:hover {
-  color: black;
-  text-decoration: underline;
+.explicacion {
+  margin-bottom: 40px;
 }
 
 .example-sequences {
-  display: inline-block;
-  text-align: center;
-  font-size: 1.2rem;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  margin: 0 auto;
+  background-color: #E0E0D4;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 10px 0;
+  font-family: monospace;
+  color: #3B564D;
 }
 
-/*tsv.vue styles*/
-.tsv-uploader {
-  padding: 40px;
-  background-color: #ffffff;
-  border-radius: 15px;
+.sec-sequencias {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  margin-top: 65px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
-.tsv-content {
+textarea {
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  min-height: 100px;
+  outline: none;
+  transition: border-color 0.3s;
+  font-family: monospace;
+}
+
+textarea:focus {
+  border-color: #B9C5B1;
+}
+
+button {
+  background-color: #3B564D;
+  color: #fff;
+  font-size: 16px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 10px;
+  
+}
+
+button:hover {
+  background-color: darken(#B9C5B1, 10%);
+}
+
+.compare-result {
+  font-size: 18px;
+  font-weight: bold;
   margin-top: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  color: #3B564D;
 }
-.upload-card {
-  width: 900px;
-  box-shadow: none;
-  margin-left: 0;
-  padding-left: 0;
-  border-left: none;
+
+.error {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.example-btn {
+  background-color: #F8F7F2;
+  color: #3B564D;
+  font-size: 14px;
+  padding: 8px 16px;
+  border: 1px solid #B9C5B1;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  display: inline-block;
+  margin: auto;
+}
+
+.example-btn:hover {
+  background-color: #B9C5B1;
+  border-color: darken(#B9C5B1, 10%);
+}
+
+/* Animación de desvanecimiento */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.comparador-content {
+  animation: fadeIn 1s ease-out forwards;
+}
+/* tsv_embed styles */
+.tsv-uploader {
+  width: 100%;
+  padding: 40px 20px;
+  background-color: #F8F7F2;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .embed-title {
-  font-size: 24px;
+  font-size: 2.5rem;
+  color: #3B564D;
   margin-bottom: 20px;
+  font-weight: bold;
   text-align: center;
 }
 
-input[type="file"] {
-  padding: 10px;
-  border: 1px solid #ccc;
+.explicacion {
+  margin-bottom: 40px;
+}
+
+.example-btn {
+  background-color: #F8F7F2;
+  color: #3B564D;
+  font-size: 14px;
+  padding: 8px 16px;
+  border: 1px solid #B9C5B1;
   border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  display: inline-block;
+  margin: auto;
+}
+
+.example-btn:hover {
+  background-color: #B9C5B1;
+  border-color: darken(#B9C5B1, 10%);
+}
+
+/* Adjustments for file input container */
+.tsv-content {
   width: 100%;
 }
 
-.upload-btn, .download-btn {
-  background-color: #049bdc;
-  color: white;
+.upload-card {
   width: 100%;
+}
+
+.file-input {
+  width: 100%;
+}
+
+.upload-btn,
+.download-btn {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background-color: #3B564D;
+  color: #fff;
   font-size: 16px;
-  margin-top: 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.upload-btn:hover, .download-btn:hover {
-  background-color: #0387b8;
+.upload-btn:hover,
+.download-btn:hover {
+  background-color: darken(#B9C5B1, 10%);
 }
 
+/* Error message style */
 .error-message {
   color: red;
-  font-size: 14px;
+  font-weight: bold;
   margin-top: 10px;
-  text-align: center;
+}
+
+/* Help.vue styles */
+.help-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+  .section-title {
+  font-size: 1.8rem;
+  color: #3B564D;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #B9C5B1;
+  padding-bottom: 5px;
+}
+
+.faq-card {
+  background-color: #F8F7F2;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.faq-card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.faq-question {
+  font-size: 18px;
+  font-weight: bold;
+  color: #3B564D;
+}
+
+.question-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.arrow-icon {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.3s ease;
+}
+
+.arrow-icon.rotated {
+  transform: rotate(-90deg);
+}
+
+.faq-answer {
+  padding: 20px;
+  font-size: 16px;
+  color: #333;
+  background-color: #E0E0D4;
+  border-top: 1px solid #ccc;
+  animation: slideDown 0.3s ease forwards;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+@keyframes slideDown {
+  from {
+      transform: translateY(-30px);
+      opacity: 0;
+  }
+
+  to {
+      transform: translateY(0);
+      opacity: 1;
+  }
 }
