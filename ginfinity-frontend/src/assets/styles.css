@@ -35,8 +35,21 @@ p {
   height: 90px;
 }
 
-.logo {
-  margin-right: auto;
+.logo-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-item logo-link {
+  text-decoration: none; 
+}
+
+.logo-img {
+  height: 50px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .navbar {
@@ -47,6 +60,7 @@ p {
 
 .navbar-list {
   display: flex;
+  align-items: center;
   gap: 30px;
   list-style: none;
   padding: 0;
@@ -556,5 +570,142 @@ button:hover {
   to {
       transform: translateY(0);
       opacity: 1;
+  }
+}
+/* Results.vue styles */
+.resultados {
+  padding: 40px 20px;
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(135deg, #F8F7F2, #E0E0D4);
+  border-radius: 12px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.result-card {
+  width: 100%;
+  background-color: #F8F7F2;
+  border-radius: 16px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.title h2 {
+  font-size: 2.2em;
+  color: #3B564D;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  margin-bottom: 30px;
+}
+
+.result-item {
+  margin-bottom: 30px;
+}
+
+.result-item strong {
+  font-size: 1.2em;
+  color: #3B564D;
+  font-weight: 600;
+}
+
+.structure {
+  font-size: 1.1em;
+  color: black;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #E0E0D4;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.embedding-result {
+  font-size: 1.1em;
+  color: black;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #E0E0D4;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.score-item {
+  background: #E0E0D4;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.score {
+  font-weight: bold;
+  font-size: 1.3em;
+  color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+  padding: 8px 15px;
+  border-radius: 10px;
+}
+
+.no-score {
+  font-weight: bold;
+  font-size: 1.3em;
+  color: #F44336;
+  background: rgba(244, 67, 54, 0.1);
+  padding: 8px 15px;
+  border-radius: 10px;
+}
+
+.back-btn {
+  width: 100%;
+  padding: 10px 10px;
+  font-weight: 600;
+  color: #F8F7F2;
+  background-color: #3B564D;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background-color: #728EA6;
+  transform: scale(1.05);
+}
+
+.v-card-actions {
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 600px) {
+  .result-card {
+      padding: 15px;
+  }
+
+  .title h2 {
+      font-size: 1.8em;
+  }
+
+  .result-item strong {
+      font-size: 1.1em;
+  }
+
+  .structure {
+      font-size: 1em;
+  }
+
+  .score {
+      font-size: 1.1em;
+  }
+
+  .no-score {
+      font-size: 1.1em;
   }
 }

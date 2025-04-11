@@ -1,10 +1,5 @@
 <template>
   <header class="header" :class="{ 'header-hidden': isScrolled }">
-    <div class="logo">
-      <router-link to="/">
-        <!-- <img src="@/assets/logo.png" alt="Ginfinity Logo" /> -->
-      </router-link>
-    </div>
     <nav class="navbar">
       <ul class="navbar-list">
         <li class="nav-item" style="--delay: 0s">
@@ -13,6 +8,13 @@
         <li class="nav-item" style="--delay: 0.1s">
           <router-link to="/comparar-arn">Compare Sequences</router-link>
         </li>
+
+        <li class="logo-item">
+          <router-link to="/" class="logo-link">
+            <img src="@/assets/logo.png" alt="Ginfinity Logo" class="logo-img" />
+          </router-link>
+        </li>
+
         <li class="nav-item" style="--delay: 0.2s">
           <router-link to="/calcular-embeddings">Calculate Embeddings</router-link>
         </li>

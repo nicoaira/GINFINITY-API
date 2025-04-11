@@ -1,38 +1,46 @@
-import { createWebHistory, createRouter } from 'vue-router'; // Cambié createWebHashHistory por createWebHistory
+import { createWebHistory, createRouter } from 'vue-router';
 import HomeView from '../views/home.vue';
-import ComparadorARN from '../views/compare.vue'; // Importa la vista ComparadorARN
-import CalcularEmbeddings from '../views/tsv_embed.vue'; // Importa la nueva vista
-import Help from '../views/help.vue'; // Importa la nueva vista
+import ComparadorARN from '../views/compare.vue';
+import CalcularEmbeddings from '../views/tsv_embed.vue'; 
+import Help from '../views/help.vue';
+import Results from '../views/results.vue'; 
+
 
 const routes = [
   {
     path: '/',
     name: 'home',
     component: HomeView,
-    meta: { title: 'Home' }, // Establecer un título para esta ruta
+    meta: { title: 'Home' }, 
   },
   {
     path: '/comparar-arn',
     name: 'comparador-arn',
     component: ComparadorARN,
-    meta: { title: 'Comparar ARN' },  // Título personalizado para esta ruta
+    meta: { title: 'Comparar ARN' },  
   },
   {
-    path: '/calcular-embeddings', // Ruta para la nueva vista
+    path: '/calcular-embeddings', 
     name: 'calcular-embeddings',
     component: CalcularEmbeddings,
-    meta: { title: 'Calcular Embeddings' }, // Título para esta ruta
+    meta: { title: 'Calcular Embeddings' }, 
   },
   {
-    path: '/help', // Ruta para la nueva vista
+    path: '/help',
     name: 'help',
     component: Help,
-    meta: { title: 'Help' }, // Título para esta ruta
+    meta: { title: 'Help' },
+  },
+  {
+    path: '/results', 
+    name: 'results',
+    component: Results,
+    meta: { title: 'Results' }, 
   }
 ];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),  // Usé createWebHistory en lugar de createWebHashHistory
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
 

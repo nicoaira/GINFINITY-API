@@ -1,6 +1,5 @@
 <template>
   <div class="comparador">
-    <!-- Comparador Section -->
     <div class="comparador-content">
       <h2 class="compare-title">RNA Sequence Comparator</h2>
 
@@ -42,22 +41,20 @@
           </v-card-text>
         </v-card>
 
-        <!-- Button to add example sequence -->
         <button @click="addExample" class="example-btn">Add Example Sequences</button>
       </div>
 
-      <!-- Form to compare sequences -->
+      <!-- Sequence Input Section -->
       <div class="sec-sequencias">
         <textarea v-model="secuencia1" placeholder="Enter the first sequence"></textarea>
         <textarea v-model="secuencia2" placeholder="Enter the second sequence"></textarea>
       </div>
+
       <button @click="compareRNA" :disabled="loading" class="btn-comparar">
         {{ loading ? "Comparing..." : "Compare" }}
       </button>
 
-      <!-- Comparison result aligned to the left -->
       <p v-if="error" class="error">{{ error }}</p>
-      <p v-if="result !== null" class="compare-result">{{ `Similarity: ${result}` }}</p>
     </div>
   </div>
 </template>
@@ -65,13 +62,14 @@
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
 import { VCard, VCardText, VDivider } from 'vuetify/components'
 
 const secuencia1 = ref('')
 const secuencia2 = ref('')
-const result = ref(null)
 const loading = ref(false)
 const error = ref(null)
+const router = useRouter()
 
 const compareRNA = async () => {
   if (!secuencia1.value || !secuencia2.value) {
@@ -81,31 +79,31 @@ const compareRNA = async () => {
 
   error.value = null
   loading.value = true
-  result.value = null
-
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  }
 
   try {
     const response = await axios.post('/compare', {
       structure1: secuencia1.value,
       structure2: secuencia2.value,
       metric: 'squared',
-    }, config);
-    result.value = response.data.similarity_score;
+    })
+
+    router.push({
+      name: 'results',
+      query: {
+        structure1: secuencia1.value,
+        structure2: secuencia2.value,
+        score: response.data.similarity_score.toString()
+      }
+    })
   } catch (err) {
-    error.value = 'There was an error comparing the sequences.';
+    error.value = 'There was an error comparing the sequences.'
   } finally {
-    loading.value = false;
+    loading.value = false
   }
 }
 
-// Function to add an example sequence
 const addExample = () => {
-  secuencia1.value = '..((((...))))..';
-  secuencia2.value = '..((...))..';
+  secuencia1.value = '..((((...))))..'
+  secuencia2.value = '..((...))..'
 }
 </script>

@@ -1,8 +1,6 @@
 <template>
   <div class="home-container">
-    <!-- Sección de Introducción con banner de fondo -->
     <section class="intro-banner">
-      <!-- Solo el fondo de la imagen, sin texto aquí -->
     </section>
     <section class="features">
       <h2 class="section-title">Welcome to Ginfinity API</h2>
@@ -11,7 +9,6 @@
         </p>
       </div>
     </section>
-    <!-- Sección de Características -->
     <section class="features">
       <h2 class="section-title">Our Features</h2>
       <div class="feature-cards">
@@ -42,7 +39,6 @@
       </div>
     </section>
 
-    <!-- Sección de Estadísticas -->
     <section class="stats">
       <h2 class="section-title">Ginfinity Database Stats</h2>
       <div class="stats-grid">
@@ -61,7 +57,6 @@
       </div>
     </section>
 
-    <!-- Sección de Investigación -->
     <section class="research">
       <h2 class="section-title">Learn More About Ginfinity API</h2>
       <p class="research-text">
