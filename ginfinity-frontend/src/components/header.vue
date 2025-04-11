@@ -11,7 +11,7 @@
 
         <li class="logo-item">
           <router-link to="/" class="logo-link">
-            <img src="@/assets/logo.png" alt="Ginfinity Logo" class="logo-img" />
+            <img src="@/assets/logo.webp" alt="Ginfinity Logo" class="logo-img" />
           </router-link>
         </li>
 
