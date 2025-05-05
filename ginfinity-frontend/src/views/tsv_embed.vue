@@ -59,7 +59,6 @@
         </v-card-title>
 
         <v-card-text>
-
           <v-file-input v-model="file" label="Select or drag a TSV file" accept=".tsv" outlined class="file-input"
             @change="handleFileUpload"></v-file-input>
         </v-card-text>
@@ -89,7 +88,19 @@
 
 <script setup>
 import { ref } from 'vue';
-import { VCard, VCardText, VFileInput, VContainer, VRow, VBtn, VCardTitle, VCol, VDivider } from 'vuetify/components';
+import { useRouter } from 'vue-router';
+import {
+  VCard,
+  VCardText,
+  VFileInput,
+  VRow,
+  VBtn,
+  VCardTitle,
+  VCol,
+  VDivider
+} from 'vuetify/components';
+
+const router = useRouter();
 
 const file = ref(null);
 const downloadUrl = ref(null);
@@ -108,13 +119,6 @@ const handleFileUpload = (event) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const content = e.target.result;
-      const rows = content.split('\n');
-      const header = rows[0].split('\t');
-
-      if (previousFileData && previousFileData !== content) {
-        errorMessage.value = '';
-      }
-
       previousFileData = content;
     };
     reader.readAsText(uploadedFile);
@@ -146,7 +150,16 @@ const processFile = async () => {
     }
 
     const updatedFile = await response.blob();
-    downloadUrl.value = URL.createObjectURL(updatedFile);
+    const text = await updatedFile.text();
+
+    sessionStorage.setItem('tsvEmbedText', text);
+
+    router.push({
+      path: '/results',
+      query: {
+        requestType: 'tsv_embed',
+      },
+    });
   } catch (error) {
     console.error('Error processing the file:', error);
   }

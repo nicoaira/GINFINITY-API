@@ -170,13 +170,12 @@ p {
   background-position: center;
   background-repeat: no-repeat;
   width: 100%;
-  height: 100vh;;
-  aspect-ratio: 16 / 6;
-  position: relative;
-  margin-bottom: 40px;
+  height: auto;
+  min-height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 @media (max-width: 768px) {
@@ -570,6 +569,8 @@ button:hover {
   background: linear-gradient(135deg, #F8F7F2, #E0E0D4);
   border-radius: 12px;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
+  align-items: center;
 }
 
 .result-card {
@@ -600,18 +601,7 @@ button:hover {
   font-weight: 600;
 }
 
-.structure {
-  font-size: 1.1em;
-  color: black;
-  word-wrap: break-word;
-  white-space: pre-wrap;
-  margin-top: 10px;
-  padding: 8px;
-  background-color: #E0E0D4;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
+.structure,
 .embedding-result {
   font-size: 1.1em;
   color: black;
@@ -649,27 +639,52 @@ button:hover {
   border-radius: 10px;
 }
 
-.back-btn {
+.buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.download-btn {
   width: 100%;
   padding: 10px 10px;
-  font-weight: 600;
   color: #F8F7F2;
   background-color: #3B564D;
   border-radius: 8px;
-  text-transform: uppercase;
   letter-spacing: 1px;
-  transition: all 0.3s ease;
+}
+.back-btn{
+  width: 100%;
+  padding: 10px 10px;
+  max-width: 100px  ;
+  color: #F8F7F2;
+  background-color: #3B564D;
+  border-radius: 8px;
+  letter-spacing: 1px;
+  margin-left:270px;
+}
+.tsv-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  margin-bottom: 30px;
 }
 
-.back-btn:hover {
-  background-color: #728EA6;
-  transform: scale(1.05);
+.tsv-table th,
+.tsv-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
 }
 
-.v-card-actions {
-  padding-top: 20px;
-  display: flex;
-  justify-content: center;
+.tsv-table th {
+  background-color: #f2f2f2;
+  color: #3B564D;
+}
+
+.tsv-table td {
+  background-color: #E0E0D4;
 }
 
 @media (max-width: 600px) {

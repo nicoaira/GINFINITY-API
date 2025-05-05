@@ -1,7 +1,7 @@
 <template>
   <div class="home-container">
-    <section class="intro-banner">
-    </section>
+    <div class="intro-banner">
+    </div>
     <section class="features">
       <h2 class="section-title">Welcome to Ginfinity API</h2>
       <div class="feature-cards">
@@ -33,7 +33,7 @@
           <p class="card-text">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec tincidunt arcu, sit amet venenatis arcu.
             Aenean dictum est in dui blandit, nec elementum tortor lobortis.
-          </p>
+          </p>  
           <router-link to="/" class="btn-learn-more">Learn More</router-link>
         </div>
       </div>
@@ -67,3 +67,4 @@
     </section>
   </div>
 </template>
+

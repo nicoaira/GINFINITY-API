@@ -2,12 +2,12 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import { createVuetify } from 'vuetify';
 import 'vuetify/styles';
-import router from './router'; // Importas el router que ya tienes configurado
+import router from './router';
 import './assets/styles.css';
 
-const vuetify = createVuetify(); // Instancia Vuetify
+const vuetify = createVuetify();
 
 createApp(App)
-  .use(vuetify) // Usas Vuetify
-  .use(router)  // Usas Vue Router
+  .use(vuetify)
+  .use(router) 
   .mount('#app');
