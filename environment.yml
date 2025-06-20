@@ -95,5 +95,7 @@ dependencies:
       - urllib3==2.3.0
       - uvicorn==0.34.0
       - yarl==1.18.3
-      # - yagmail
-      # - keyring
+      - rq==1.14.1
+      - flask==3.0.3
+
+

@@ -17,7 +17,7 @@ export default defineComponent({
   components: {
     Header,
     ScrollToTop,
-  },
+  },        
 });
 </script>
 

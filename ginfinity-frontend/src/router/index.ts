@@ -4,6 +4,8 @@ import ComparadorARN from '../views/compare.vue';
 import CalcularEmbeddings from '../views/tsv_embed.vue'; 
 import Help from '../views/help.vue';
 import Results from '../views/results.vue'; 
+import JobStatus from '@/components/JobStatus.vue'
+
 
 const routes = [
   {
@@ -35,6 +37,12 @@ const routes = [
     name: 'results',
     component: Results,
     meta: { title: 'Results' }, 
+  },
+  {
+    path: '/job/:jobId',
+    name: 'JobStatus',
+    component: JobStatus,
+    props: true
   }
 ];
 

@@ -23,9 +23,6 @@ from api.routes import health
 # Middleware to enable CORS in FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-#Import email sender
-#import shutil
-#import yagmail
 
 # Initialize FastAPI app and include API routes first
 app = FastAPI(title="RNA Similarity API")
@@ -123,46 +120,6 @@ def embed_endpoint(request: EmbedRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error computing embedding: {str(e)}")
 
-# Endpoint to compare two RNA structures
-@app.post("/compare", response_model=CompareResponse)
-def compare_endpoint(request: CompareRequest):
-    try:
-        validate_structure(request.structure1)
-        if isinstance(request.structure2, list):
-            for s in request.structure2:
-                validate_structure(s)
-        else:
-            validate_structure(request.structure2)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    
-    try:
-        emb_list1 = get_gin_embedding(model, graph_encoding, [request.structure1], device, batch_size=1, cpus=1)[0]
-        vec1 = [float(x) for x in emb_list1[0][1].split(',')]
-        
-        def compute_similarity(vec_a, vec_b, metric):
-            embeddings = [vec_a, vec_b]
-            distances = calculate_distances(embeddings, metric=metric, num_workers=1, batch_size=1)
-            return distances[0][2]
-        
-        if isinstance(request.structure2, list):
-            scores = []
-            emb_lists2 = get_gin_embedding(model, graph_encoding, request.structure2, device, batch_size=1, cpus=1)
-            for emb_list2 in emb_lists2:
-                vec2 = [float(x) for x in emb_list2[0][1].split(',')]
-                if len(vec1) != len(vec2):
-                    raise HTTPException(status_code=400, detail="Embedding dimensions do not match.")
-                scores.append(compute_similarity(vec1, vec2, request.metric))
-            return CompareResponse(similarity_score=scores)
-        else:
-            emb_list2 = get_gin_embedding(model, graph_encoding, [request.structure2], device, batch_size=1, cpus=1)[0]
-            vec2 = [float(x) for x in emb_list2[0][1].split(',')]
-            if len(vec1) != len(vec2):
-                raise HTTPException(status_code=400, detail="Embedding dimensions do not match.")
-            score = compute_similarity(vec1, vec2, request.metric)
-            return CompareResponse(similarity_score=score)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error computing similarity: {str(e)}")
 
 # Endpoint to search for similar RNA embeddings in the database
 @app.post("/search", response_model=SearchResponse)
@@ -227,39 +184,58 @@ def batch_embed_endpoint(request: BatchEmbedRequest):
 
 # New endpoint to process TSV file and add an embedding_vector column.
 @app.post("/tsv_embed")
-async def tsv_embed_endpoint(file: UploadFile = File(...)):
+def async_embed(request: EmbedRequest):
     try:
-        content = await file.read()
-        df = pd.read_csv(io.StringIO(content.decode("utf-8")), sep="\t")
+        validate_structure(request.structure)
     except Exception as e:
-        raise HTTPException(status_code=400, detail="Invalid TSV file.")
+        raise HTTPException(status_code=400, detail=str(e))
     
-    if not {"id", "secondary_structure"}.issubset(df.columns):
-        raise HTTPException(status_code=400, detail="TSV must contain 'id' and 'secondary_structure' columns.")
-    
-    # Compute embeddings for each structure (using L=None for a single embedding)
-    structures = df["secondary_structure"].tolist()
-    emb_results = get_gin_embedding(model, graph_encoding, structures, device, L=None, batch_size=128, cpus=2)
-    embeddings = [emb_list[0][1] for emb_list in emb_results]  # pick the first embedding from each result
-    
-    df["embedding_vector"] = embeddings
-    output = io.StringIO()
-    df.to_csv(output, sep="\t", index=False)
-    return Response(content=output.getvalue(), media_type="text/tab-separated-values")
+    job = queue.enqueue(run_embed, request.structure)
+    return {
+        "message": "Embedding en proceso",
+        "job_id": job.get_id(),
+        "result_url": f"/results/{job.get_id()}"
+    }
 
-#  @app.post("/send_email")
-#  async def send_email(file: UploadFile, email: str = Form(...)):
-#      file_path = f"temp_{file.filename}"
-    
-#      # Guardar archivo temporalmente
-#      with open(file_path, "wb") as buffer:
-#          shutil.copyfileobj(file.file, buffer)
+from rq import Queue
+from redis import Redis
+from flask import Flask, request, jsonify
+import os
+import time
 
-#      # Enviar correo
-#      yag = yagmail.SMTP(EMAIL_EMISOR, EMAIL_PASSWORD)
-#      yag.send(to=email, subject="Tu archivo TSV procesado", contents="Adjunto el archivo actualizado.", attachments=[file_path])
+app = Flask(__name__)
 
-#      # Eliminar archivo temporal
-#      os.remove(file_path)
-    
-#      return {"message": f"Archivo enviado a {email}"}
+redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+redis_conn = Redis.from_url(redis_url)
+q = Queue(connection=redis_conn)
+
+def compare_task(structure1, structure2, metric):
+    # Aquí iría tu lógica pesada real
+    time.sleep(5)  # Simulamos trabajo largo
+    similarity_score = 0.21  # Resultado simulado
+    return {"similarity_score": similarity_score}
+
+@app.route('/compare', methods=['POST'])
+def compare():
+    data = request.json
+    structure1 = data.get('structure1')
+    structure2 = data.get('structure2')
+    metric = data.get('metric')
+
+    job = q.enqueue(compare_task, structure1, structure2, metric)
+    print(f"Job enqueued with ID: {job.get_id()}") 
+    return jsonify({"job_id": job.get_id()})
+
+@app.route('/job/<job_id>', methods=['GET'])
+def get_job_result(job_id):
+    job = q.fetch_job(job_id)
+    if not job:
+        return jsonify({"error": "Job no encontrado"}), 404
+
+    if job.is_finished:
+        return jsonify({"result": job.result, "finished": True})
+    else:
+        return jsonify({"finished": False})
+
+if __name__ == '__main__': 
+    app.run(host='0.0.0.0', debug=True)

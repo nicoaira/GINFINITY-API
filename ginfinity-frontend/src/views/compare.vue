@@ -71,34 +71,32 @@ const loading = ref(false)
 const error = ref(null)
 const router = useRouter()
 
-const compareRNA = async () => {
-  if (!secuencia1.value || !secuencia2.value) {
-    error.value = 'Please enter both sequences.'
-    return
-  }
-
-  error.value = null
-  loading.value = true
-
+async function compareRNA() {
   try {
-    const response = await axios.post('/compare', {
-      structure1: secuencia1.value,
-      structure2: secuencia2.value,
-      metric: 'squared',
-    })
-
-    router.push({
-      name: 'results',
-      query: {
+    const response = await fetch('/compare', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
         structure1: secuencia1.value,
         structure2: secuencia2.value,
-        score: response.data.similarity_score.toString()
-      }
+      })
     })
-  } catch (err) {
-    error.value = 'There was an error comparing the sequences.'
-  } finally {
-    loading.value = false
+    if (!response.ok) throw new Error(`Error HTTP: ${response.status}`)
+
+    const data = await response.json()
+    if (data.job_id) {
+      // Redirige a la página de status del job y pasa query params para mostrar después
+      router.push({
+        name: 'JobStatus',
+        params: { jobId: data.job_id },
+        query: { structure1: secuencia1.value, structure2: secuencia2.value }
+      })
+    } else {
+      throw new Error('No se recibió job_id')
+    }
+  } catch (error) {
+    console.error('Error comparing:', error)
+    // Aquí muestra tu mensaje de error en rojo o lo que uses
   }
 }
 
